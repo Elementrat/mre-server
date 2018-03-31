@@ -1,0 +1,20 @@
+{
+    "extends": "airbnb",
+    "rules": {
+        "no-named-as-default" : "off",
+        "no-unused-vars" : "warn",
+        "comma-dangle" : "warn",
+        "require-default-props" : "off",
+        "linebreak-style" : "off",
+        "react/jsx-filename-extension" : "off",
+        "react/prefer-stateless-function" : "off",
+        "react/forbid-prop-types" : "off"
+    },
+    "parserOptions": {
+        "ecmaVersion" : 7,
+        "ecmaFeatures": {
+            "jsx" : true,
+            "modules" : true
+        }
+    }
+}
