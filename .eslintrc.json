@@ -3,6 +3,7 @@
     "rules": {
         "no-named-as-default" : "off",
         "no-unused-vars" : "warn",
+        "no-console" : "off",
         "comma-dangle" : "warn",
         "require-default-props" : "off",
         "linebreak-style" : "off",

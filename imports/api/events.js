@@ -1,6 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
-import Mysteries from './mysteries'
+import Mysteries from './mysteries';
+import Connections from './connections';
 
 const Events = new Mongo.Collection('events');
 
@@ -12,7 +13,16 @@ const Events = new Mongo.Collection('events');
 // items - array of item objects
 
 Meteor.methods({
-  'Events.insertOne': ({ mysteryName, hostName, startDateTime, hostCharacterID, currentPhase, phases }) => {
+
+  getConnectionInfo(){
+    if(!!this.connection){
+      return this.connection.id
+    }
+  },
+
+  'Events.insertOne': ({
+    mysteryName, hostName, startDateTime, hostCharacterID, currentPhase, phases 
+  }) => {
     console.log('Adding event with name', mysteryName, 'hosted by', hostName);
 
     const requestedMystery = Mysteries.findOne({ name: mysteryName });
@@ -27,6 +37,23 @@ Meteor.methods({
       phases,
     });
   },
+
+  'Events.setCharacterOnline': ({ eventID, characterID, connectionID }) => {
+    Events.update(
+      { _id: eventID, 'mysteryData.characters._id': characterID },
+      { $set: { 'mysteryData.characters.$.online': true }}
+    );
+    Meteor.call('Connections.addOne', { eventID, characterID, connectionID });
+  },
+
+  'Events.setCharacterOffline': ({ eventID, characterID, connectionID }) => {
+    Events.update(
+      { _id: eventID, 'mysteryData.characters._id': characterID },
+      { $set: { 'mysteryData.characters.$.online': false }}
+    );
+    Meteor.call('Connections.removeOne', { eventID, characterID, connectionID });
+  },
+
   'Events.removeAll': () => {
     console.log('Deleting all events');
     return Events.remove({});
